@@ -3,12 +3,7 @@ pub mod responses;
 pub mod traits;
 
 use self::{models::TwitchGame, responses::HelixResponse};
-
-macro_rules! ret {
-    ($returnType:ty) => {
-        Result<$returnType, Box<dyn std::error::Error>>
-    };
-}
+use std::error::Error;
 
 pub struct TwitchApi {
     client_id: String,
@@ -16,14 +11,14 @@ pub struct TwitchApi {
 }
 
 impl TwitchApi {
-    pub fn new(client_id: String) -> ret!(TwitchApi) {
+    pub fn new(client_id: String) -> Result<TwitchApi, Box<dyn Error>> {
         Ok(TwitchApi {
             client_id,
             client: reqwest::Client::builder().build()?
         })
     }
 
-    pub async fn top_games(&self) -> ret!(HelixResponse<TwitchGame>) {
+    pub async fn top_games(&self) -> Result<HelixResponse<TwitchGame>, Box<dyn Error>> {
         Ok(
             serde_json::from_str(
                 &self.get(String::from("https://api.twitch.tv/helix/games/top"))
@@ -34,7 +29,7 @@ impl TwitchApi {
         )
     }
 
-    async fn get(&self, url: String) -> ret!(reqwest::Response) {
+    async fn get(&self, url: String) -> Result<reqwest::Response, Box<dyn Error>> {
         Ok(self.client.get(&url[..])
             .header("Client-ID", &self.client_id[..])
             .send()
