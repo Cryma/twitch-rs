@@ -2,9 +2,21 @@ pub mod models;
 pub mod responses;
 pub mod traits;
 
-use self::{models::TwitchGame, responses::HelixResponse};
+use self::{models::TwitchGame, responses::HelixPaginatedResponse};
 use std::error::Error;
 use std::collections::HashMap;
+
+macro_rules! pagination {
+    ($data:tt, $after:tt, $before:tt) => {
+        if let Some(value) = $after {
+            $data.insert("after", value);
+        }
+
+        if let Some(value) = $before {
+            $data.insert("before", value);
+        }
+    }
+}
 
 pub struct TwitchApi {
     client_id: String,
@@ -19,17 +31,11 @@ impl TwitchApi {
         })
     }
 
-    pub async fn top_games(&self, first: i32, after: Option<String>, before: Option<String>) -> Result<HelixResponse<TwitchGame>, Box<dyn Error>> {
+    pub async fn top_games(&self, first: i32, after: Option<String>, before: Option<String>) -> Result<HelixPaginatedResponse<TwitchGame>, Box<dyn Error>> {
         let mut data = HashMap::new();
         data.insert("first", first.to_string());
 
-        if let Some(value) = after {
-            data.insert("after", value);
-        }
-
-        if let Some(value) = before {
-            data.insert("before", value);
-        }
+        pagination!(data, after, before);
 
         Ok(
             serde_json::from_str(
