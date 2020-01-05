@@ -2,18 +2,17 @@ pub mod models;
 pub mod responses;
 pub mod traits;
 
-use self::{models::TwitchGame, responses::HelixPaginatedResponse};
+use self::{models::TwitchGame, responses::{HelixResponse, HelixPaginatedResponse} };
 use std::error::Error;
-use std::collections::HashMap;
 
 macro_rules! pagination {
     ($data:tt, $after:tt, $before:tt) => {
         if let Some(value) = $after {
-            $data.insert("after", value);
+            $data.push(("after", value));
         }
 
         if let Some(value) = $before {
-            $data.insert("before", value);
+            $data.push(("before", value));
         }
     }
 }
@@ -32,8 +31,7 @@ impl TwitchApi {
     }
 
     pub async fn top_games(&self, first: i32, after: Option<String>, before: Option<String>) -> Result<HelixPaginatedResponse<TwitchGame>, Box<dyn Error>> {
-        let mut data = HashMap::new();
-        data.insert("first", first.to_string());
+        let mut data: Vec<(&str, String)> = vec![("first", first.to_string())];
 
         pagination!(data, after, before);
 
@@ -47,7 +45,24 @@ impl TwitchApi {
         )
     }
 
-    async fn get(&self, url: String, data: &HashMap<&str, String>) -> Result<reqwest::Response, Box<dyn Error>> {
+    pub async fn games(&self, game_ids: &Vec<String>) -> Result<HelixResponse<TwitchGame>, Box<dyn Error>> {
+        let mut data: Vec<(&str, String)> = vec![];
+
+        for game_id in game_ids {
+            data.push(("id", String::from(game_id)));
+        }
+
+        Ok(
+            serde_json::from_str(
+                &self.get(String::from("https://api.twitch.tv/helix/games"), &data)
+                    .await?
+                    .text()
+                    .await?[..]
+            )?
+        )
+    }
+
+    async fn get(&self, url: String, data: &Vec<(&str, String)>) -> Result<reqwest::Response, Box<dyn Error>> {
         Ok(self.client.get(&url[..])
             .header("Client-ID", &self.client_id[..])
             .query(&data)
