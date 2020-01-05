@@ -1,5 +1,12 @@
 [package]
 name = "twitch-rs"
+description = "Rust Wrapper for the Twitch Helix API"
+categories = ["api-bindings"]
+keywords = ["twitch", "helix", "api"]
+repository = "https://github.com/Cryma/twitch-rs"
+readme = "README.md"
+license = "MIT"
+license-file = "LICENSE"
 version = "0.1.0"
 authors = ["Fabian Vowie <crymaprivat@gmail.com>"]
 edition = "2018"
