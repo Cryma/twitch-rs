@@ -2,8 +2,9 @@ pub mod models;
 pub mod responses;
 pub mod traits;
 
-use self::{models::TwitchGame, responses::{HelixResponse, HelixPaginatedResponse} };
-use std::error::Error;
+use self::{models::HelixGame, responses::{HelixResponse, HelixPaginatedResponse} };
+
+type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 macro_rules! pagination {
     ($data:tt, $after:tt, $before:tt) => {
@@ -23,14 +24,14 @@ pub struct TwitchApi {
 }
 
 impl TwitchApi {
-    pub fn new(client_id: String) -> Result<TwitchApi, Box<dyn Error>> {
+    pub fn new(client_id: String) -> Result<TwitchApi> {
         Ok(TwitchApi {
             client_id,
             client: reqwest::Client::builder().build()?
         })
     }
 
-    pub async fn top_games(&self, first: i32, after: Option<String>, before: Option<String>) -> Result<HelixPaginatedResponse<TwitchGame>, Box<dyn Error>> {
+    pub async fn top_games(&self, first: i32, after: Option<String>, before: Option<String>) -> Result<HelixPaginatedResponse<HelixGame>> {
         let mut data: Vec<(&str, String)> = vec![("first", first.to_string())];
 
         pagination!(data, after, before);
@@ -45,7 +46,7 @@ impl TwitchApi {
         )
     }
 
-    pub async fn games(&self, game_ids: &Vec<String>) -> Result<HelixResponse<TwitchGame>, Box<dyn Error>> {
+    pub async fn games(&self, game_ids: &Vec<String>) -> Result<HelixResponse<HelixGame>> {
         let mut data: Vec<(&str, String)> = vec![];
 
         for game_id in game_ids {
@@ -62,7 +63,7 @@ impl TwitchApi {
         )
     }
 
-    async fn get(&self, url: String, data: &Vec<(&str, String)>) -> Result<reqwest::Response, Box<dyn Error>> {
+    async fn get(&self, url: String, data: &Vec<(&str, String)>) -> Result<reqwest::Response> {
         Ok(self.client.get(&url[..])
             .header("Client-ID", &self.client_id[..])
             .query(&data)

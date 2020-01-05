@@ -1,1 +1,1 @@
-pub trait TwitchModel {}
+pub trait HelixModel {}

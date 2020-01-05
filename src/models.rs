@@ -2,7 +2,7 @@ use std::fmt::Debug;
 use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct TwitchClip {
+pub struct HelixClip {
     pub id: String,
     pub url: String,
     pub embed_url: String,
@@ -19,10 +19,10 @@ pub struct TwitchClip {
     pub thumbnail_url: String
 }
 
-impl super::traits::TwitchModel for TwitchClip {}
+impl super::traits::HelixModel for HelixClip {}
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct TwitchFollow {
+pub struct HelixFollow {
     pub from_id: String,
     pub from_name: String,
     pub to_id: String,
@@ -30,24 +30,24 @@ pub struct TwitchFollow {
     pub followed_at: String
 }
 
-impl super::traits::TwitchModel for TwitchFollow {}
+impl super::traits::HelixModel for HelixFollow {}
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct TwitchGame {
+pub struct HelixGame {
     pub id: String,
     pub name: String,
     pub box_art_url: String
 }
 
-impl super::traits::TwitchModel for TwitchGame {}
+impl super::traits::HelixModel for HelixGame {}
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct TwitchPagination {
+pub struct HelixPagination {
     pub cursor: String
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct TwitchStream {
+pub struct HelixStream {
     pub id: String,
     pub user_id: String,
     pub user_name: String,
@@ -60,10 +60,10 @@ pub struct TwitchStream {
     pub thumbnail_url: String
 }
 
-impl super::traits::TwitchModel for TwitchStream {}
+impl super::traits::HelixModel for HelixStream {}
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct TwitchUser {
+pub struct HelixUser {
     pub id: String,
     pub login: String,
     pub display_name: String,
@@ -76,10 +76,10 @@ pub struct TwitchUser {
     pub email: String
 }
 
-impl super::traits::TwitchModel for TwitchUser {}
+impl super::traits::HelixModel for HelixUser {}
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct TwitchVideo {
+pub struct HelixVideo {
     pub id: String,
     pub user_id: String,
     pub user_name: String,
@@ -96,4 +96,4 @@ pub struct TwitchVideo {
     pub duration: String
 }
 
-impl super::traits::TwitchModel for TwitchVideo {}
+impl super::traits::HelixModel for HelixVideo {}
