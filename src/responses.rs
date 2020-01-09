@@ -1,20 +1,26 @@
 use std::fmt::Debug;
 use serde::{Serialize, Deserialize};
+use crate::traits::HelixModel;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct HelixResponse<T: super::traits::HelixModel> {
+pub struct HelixResponse<T: HelixModel> {
     pub data: Vec<T>
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct HelixPaginatedResponse<T: super::traits::HelixModel> {
+pub struct HelixPaginatedResponse<T: HelixModel> {
     pub data: Vec<T>,
-    pub pagination: super::models::HelixPagination
+    pub pagination: HelixPagination
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct HelixPaginatedResponseWithTotal<T: super::traits::HelixModel> {
+pub struct HelixPaginatedResponseWithTotal<T: HelixModel> {
     pub data: Vec<T>,
-    pub pagination: super::models::HelixPagination,
+    pub pagination: HelixPagination,
     pub total: i32
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct HelixPagination {
+    pub cursor: String
 }
